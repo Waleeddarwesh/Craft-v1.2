@@ -18,7 +18,7 @@ Version 1.2 introduces **production-ready architecture**, **enhanced security ha
 - [Testing](#testing)
 - [Contact](#contact)
 
-## 🚀 Key Features
+## Key Features
 
 ### 🛒 E-commerce Core
 - **Marketplace:** Multi-vendor support allowing Crafters to manage products and stock.
@@ -33,7 +33,7 @@ Version 1.2 introduces **production-ready architecture**, **enhanced security ha
 - **Chat App:** Real-time messaging using **WebSockets (Django Channels)** and **Redis**.
 - **Social Feed:** Follow system, product likes, and real-time notifications.
 
-## ✨ New in V1.2
+## New in V1.2
 
 - **Production Hardening:** Strictly enforced security headers (HSTS, XSS Filter, Content-Type Sniffing).
 - **Modern ASGI Server:** Switched to **Daphne** with native **HTTP/2** support.
@@ -42,7 +42,7 @@ Version 1.2 introduces **production-ready architecture**, **enhanced security ha
 - **Deployment Ready:** Pre-configured `Procfile` and `railway.json` for one-click cloud deployment.
 - **Requirement Cleanup:** Audited and optimized dependencies for a lighter, conflict-free installation.
 
-## 🛠 Technical Architecture
+## Technical Architecture
 
 * **Backend:** Django 5.0 & Django REST Framework
 * **Real-Time:** Django Channels (ASGI) & Daphne
@@ -51,13 +51,13 @@ Version 1.2 introduces **production-ready architecture**, **enhanced security ha
 * **Static Files:** WhiteNoise (Compressed & Manifested)
 * **API Documentation:** Swagger (drf-yasg)
 
-## ⚙️ Prerequisites
+## Prerequisites
 * Python 3.11.9
 * PostgreSQL
 * Redis Server
 * Git
 
-## 🔧 Installation (Manual)
+## Installation (Manual)
 
 1.  **Clone the V1.2 repository:**
     ```bash
@@ -86,7 +86,7 @@ Version 1.2 introduces **production-ready architecture**, **enhanced security ha
     python manage.py runserver
     ```
 
-## 🔐 Environment Configuration
+## Environment Configuration
 
 Create a `.env` file in the root directory. Version 1.2 uses the following structure:
 
@@ -118,7 +118,7 @@ EMAIL_HOST_USER=your_email@gmail.com
 EMAIL_HOST_PASSWORD=your_app_password
 ```
 
-## ☁️ Production Deployment (Railway)
+## Production Deployment (Railway)
 
 This version is optimized for **Railway**:
 - **Automatic Migrations:** The `release` phase in `Procfile` handles migrations during build.
@@ -127,18 +127,18 @@ This version is optimized for **Railway**:
 
 Simply connect your GitHub repo to Railway and set `ENVIRONMENT=production` in the variables.
 
-## 📖 API Documentation
+## API Documentation
 Once the server is running, you can access the interactive API documentation:
 
 * **Swagger UI:** [http://localhost:8000/docs/](http://localhost:8000/docs/)
 
-## 🧪 Testing
+## Testing
 V1.2 includes a comprehensive endpoint test suite:
 ```bash
 python test_all_endpoints.py
 ```
 
-## 📞 Contact
+## Contact
 **Waleed Darwesh** - Backend Software Engineer  
 📧 [Waleeddarwesh2002@gmail.com](mailto:Waleeddarwesh2002@gmail.com)  
 🔗 [LinkedIn Profile](https://www.linkedin.com/in/Waleeddarwesh1)
