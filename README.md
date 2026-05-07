@@ -2,9 +2,7 @@
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue) ![Django](https://img.shields.io/badge/Django-5.0-green) ![DRF](https://img.shields.io/badge/DRF-Rest_Framework-red) ![Daphne](https://img.shields.io/badge/Server-Daphne_HTTP%2F2-blueviolet) ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
-**Craft** is a comprehensive multi-vendor marketplace and e-learning platform designed to bridge the gap between handcraft suppliers (Crafters) and Customers. 
-
-Version 1.2 introduces **production-ready architecture**, **enhanced security hardening**, and **optimized deployment** for cloud platforms like Railway.
+**Craft** is a comprehensive platform integrating social, e-commerce, courses, and chat functionalities. It features **150+ endpoints** for seamless data flow across Customer, Crafter, and Delivery interfaces, bridging the gap between handcraft suppliers and their global audience.
 
 ## 📋 Table of Contents
 - [Key Features](#key-features)
