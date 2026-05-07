@@ -1,20 +1,21 @@
-# 🧶 Craft Application
+# 🧶 Craft Application - Version 1.2
 
-![Python](https://img.shields.io/badge/Python-3.11-blue) ![Django](https://img.shields.io/badge/Django-5.0-green) ![DRF](https://img.shields.io/badge/DRF-Rest_Framework-red) ![Docker](https://img.shields.io/badge/Docker-Containerized-blue) ![License](https://img.shields.io/badge/License-MIT-lightgrey)
+![Python](https://img.shields.io/badge/Python-3.11-blue) ![Django](https://img.shields.io/badge/Django-5.0-green) ![DRF](https://img.shields.io/badge/DRF-Rest_Framework-red) ![Daphne](https://img.shields.io/badge/Server-Daphne_HTTP%2F2-blueviolet) ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
 **Craft** is a comprehensive multi-vendor marketplace and e-learning platform designed to bridge the gap between handcraft suppliers (Crafters) and Customers. 
 
-This extensive backend project exposes over **150 endpoints**, integrating E-commerce logic, Social networking, Video streaming for courses, and Real-time communication into a single, scalable architecture.
+Version 1.2 introduces **production-ready architecture**, **enhanced security hardening**, and **optimized deployment** for cloud platforms like Railway.
 
 ## 📋 Table of Contents
 - [Key Features](#key-features)
+- [New in V1.2](#new-in-v12)
 - [Technical Architecture](#technical-architecture)
-- [User Interfaces](#user-interfaces)
 - [Prerequisites](#prerequisites)
-- [Installation (Docker - Recommended)](#installation-docker---recommended)
 - [Installation (Manual)](#installation-manual)
 - [Environment Configuration](#environment-configuration)
+- [Production Deployment (Railway)](#production-deployment-railway)
 - [API Documentation](#api-documentation)
+- [Testing](#testing)
 - [Contact](#contact)
 
 ## 🚀 Key Features
@@ -23,153 +24,121 @@ This extensive backend project exposes over **150 endpoints**, integrating E-com
 - **Marketplace:** Multi-vendor support allowing Crafters to manage products and stock.
 - **Order Management:** Complex order lifecycle (Cart -> Order -> Shipment -> Delivery).
 - **Financials:** Integrated **Stripe** payments, custom wallet system, and refund handling.
-- **Promotions:** Coupon and discount management system.
 
 ### 🎓 E-Learning Platform
 - **Courses:** Crafters can upload video courses to teach their craft.
 - **Progress Tracking:** Users can enroll in courses and track their learning progress.
-- **Certificates:** System to issue certifications upon course completion.
 
 ### 💬 Social & Real-Time
-- **Chat App:** Real-time messaging between buyers and sellers using **WebSockets (Django Channels)** and **Redis**.
-- **Social Feed:** Users can follow Crafters, like products, and view activity feeds.
-- **Notifications:** Real-time push notifications for order updates and chat messages.
+- **Chat App:** Real-time messaging using **WebSockets (Django Channels)** and **Redis**.
+- **Social Feed:** Follow system, product likes, and real-time notifications.
 
-### 🤖 Smart Features
-- **Recommendations:** AI/Logic-based engine to suggest products and courses.
-- **Background Tasks:** Uses **Celery** for handling heavy tasks like email sending and report generation asynchronously.
+## ✨ New in V1.2
+
+- **Production Hardening:** Strictly enforced security headers (HSTS, XSS Filter, Content-Type Sniffing).
+- **Modern ASGI Server:** Switched to **Daphne** with native **HTTP/2** support.
+- **Environment-Aware Config:** Professional `settings.py` structure using `django-environ`.
+- **Database Optimization:** Implemented persistent connection pooling for high-performance production traffic.
+- **Deployment Ready:** Pre-configured `Procfile` and `railway.json` for one-click cloud deployment.
+- **Requirement Cleanup:** Audited and optimized dependencies for a lighter, conflict-free installation.
 
 ## 🛠 Technical Architecture
 
-* **Backend Framework:** Django & Django REST Framework (DRF)
-* **Database:** PostgreSQL
-* **Caching & Message Broker:** Redis
-* **Async Task Queue:** Celery
-* **Real-Time Communication:** Django Channels (ASGI)
-* **Containerization:** Docker & Docker Compose
-* **Authentication:** JWT (SimpleJWT) & Social Auth (Google/Facebook)
+* **Backend:** Django 5.0 & Django REST Framework
+* **Real-Time:** Django Channels (ASGI) & Daphne
+* **Database:** PostgreSQL (with Psycopg 3 support)
+* **Async Tasks:** Celery 5.6 & Redis
+* **Static Files:** WhiteNoise (Compressed & Manifested)
 * **API Documentation:** Swagger (drf-yasg)
 
-## 👥 User Interfaces
-The backend serves three distinct frontend applications:
-1.  **Customer App:** For browsing products, buying courses, and social interaction.
-2.  **Crafter Dashboard:** For inventory management, course uploading, and sales analytics.
-3.  **Delivery App:** A streamlined interface for drivers to update shipment statuses.
-
 ## ⚙️ Prerequisites
-* Python 3.10+
+* Python 3.11.9
 * PostgreSQL
 * Redis Server
 * Git
 
-## 🐳 Installation (Docker - Recommended)
-The easiest way to run the project is using Docker Compose.
-
-1.  **Clone the repository:**
-    ```bash
-    git clone [https://github.com/Waleeddarwesh/Craft.git](https://github.com/Waleeddarwesh/Craft.git)
-    cd Craft
-    ```
-
-2.  **Create the environment file:**
-    Create a `.env` file in the root directory (see [Environment Configuration](#environment-configuration)).
-
-3.  **Build and Run:**
-    ```bash
-    docker-compose up --build
-    ```
-    This will spin up the Django web server, PostgreSQL database, Redis, and Celery workers automatically.
-
 ## 🔧 Installation (Manual)
 
-If you prefer running it without Docker:
-
-1.  **Set Up Virtual Environment:**
+1.  **Clone the V1.2 repository:**
     ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    git clone https://github.com/Waleeddarwesh/Craft-V1.2.git
+    cd Craft-V1.2
     ```
 
-2.  **Install Dependencies:**
+2.  **Set Up Virtual Environment:**
+    ```bash
+    python -m venv venv
+    venv\Scripts\activate  # Windows
+    source venv/bin/activate  # Linux/macOS
+    ```
+
+3.  **Install Dependencies:**
     ```bash
     pip install -r requirements.txt
     ```
 
-3.  **Configure Environment:**
-    Create a `.env` file in the root folder based on the example below.
+4.  **Configure Environment:**
+    Create a `.env` file in the root directory (see [Environment Configuration](#environment-configuration)).
 
-4.  **Apply Migrations:**
+5.  **Apply Migrations & Run:**
     ```bash
     python manage.py migrate
-    ```
-
-5.  **Create Superuser:**
-    ```bash
-    python manage.py createsuperuser
-    ```
-
-6.  **Run Server:**
-    ```bash
     python manage.py runserver
     ```
-    *(Note: To use Chat and Async tasks manually, you must verify Redis is running locally).*
 
 ## 🔐 Environment Configuration
 
-Create a `.env` file in the root directory (same level as `manage.py`). Do **not** hardcode credentials in `settings.py`.
+Create a `.env` file in the root directory. Version 1.2 uses the following structure:
 
 ```ini
-# Core Settings
+# Project Config
+ENVIRONMENT=development  # Set to 'production' for security hardening
 DEBUG=True
-SECRET_KEY=your_secret_key_here
-ALLOWED_HOSTS=localhost,127.0.0.1
+SECRET_KEY=your_django_secret_key
 
-# Database (PostgreSQL)
-DATABASE_URL=postgres://user:password@localhost:5432/craft_db
+# Security
+ALLOWED_HOSTS=localhost,127.0.0.1,testserver
+CORS_ALLOWED_ORIGINS=http://localhost:8000
+CSRF_TRUSTED_ORIGINS=http://localhost:8000
 
-# Redis (Required for Chat & Celery)
+# Database
+DATABASE_URL=postgres://user:password@localhost:5432/db_name
+
+# Redis & Celery
 REDIS_URL=redis://localhost:6379/0
+CELERY_BROKER_URL=redis://localhost:6379/0
 
-# Stripe Payments
+# Stripe
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_PUBLISHABLE_KEY=pk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
 
-# Google Auth
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-
-# Email (Mailtrap or Sendgrid)
-EMAIL_HOST=sandbox.smtp.mailtrap.io
-EMAIL_HOST_USER=your_user
-EMAIL_HOST_PASSWORD=your_password
+# Email
+EMAIL_HOST=smtp.gmail.com
+EMAIL_HOST_USER=your_email@gmail.com
+EMAIL_HOST_PASSWORD=your_app_password
 ```
+
+## ☁️ Production Deployment (Railway)
+
+This version is optimized for **Railway**:
+- **Automatic Migrations:** The `release` phase in `Procfile` handles migrations during build.
+- **Build Optimized:** `railway.json` ensures static files are collected and built efficiently.
+- **Daphne Ready:** The web process is pre-configured to run with Daphne for WebSocket support.
+
+Simply connect your GitHub repo to Railway and set `ENVIRONMENT=production` in the variables.
+
 ## 📖 API Documentation
-Once the server is running, you can access the interactive API documentation to test over 150 endpoints.
+Once the server is running, you can access the interactive API documentation:
 
 * **Swagger UI:** [http://localhost:8000/docs/](http://localhost:8000/docs/)
-* **Redoc:** [http://localhost:8000/redoc/](http://localhost:8000/redoc/)
 
-## 🤝 Contributing
-1. Fork the repository.
-2. Create a new branch:
-    ```bash
-    git checkout -b feature/AmazingFeature
-    ```
-3. Commit your changes:
-    ```bash
-    git commit -m 'Add some AmazingFeature'
-    ```
-4. Push to the branch:
-    ```bash
-    git push origin feature/AmazingFeature
-    ```
-5. Open a Pull Request.
+## 🧪 Testing
+V1.2 includes a comprehensive endpoint test suite:
+```bash
+python test_all_endpoints.py
+```
 
 ## 📞 Contact
 **Waleed Darwesh** - Backend Software Engineer  
 📧 [Waleeddarwesh2002@gmail.com](mailto:Waleeddarwesh2002@gmail.com)  
-🔗 [LinkedIn Profile](#Waleeddarwesh1)
-
-
-
+🔗 [LinkedIn Profile](https://www.linkedin.com/in/Waleeddarwesh1)
