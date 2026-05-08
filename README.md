@@ -120,7 +120,7 @@ The backend serves three separate frontend applications:
 - Driver workflow management
 
 ---
-
+<a id="prerequisites"></a>
 # ⚙️ Prerequisites
 
 Before running the project, ensure you have:
