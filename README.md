@@ -93,7 +93,7 @@ The project follows scalable backend architecture principles using Django and mo
 | Django Channels | Real-Time Communication |
 | WhiteNoise | Static File Serving (Compressed & Manifested) |
 | Docker & Docker Compose | Containerization |
-| JWT (SimpleJWT) | Authentication |
+| JWT (SimpleJWT) & Social Auth| Authentication |
 | Swagger (drf-yasg) | API Documentation |
 
 ---
