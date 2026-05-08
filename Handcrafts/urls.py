@@ -13,7 +13,7 @@ schema_view = get_schema_view(
     openapi.Info(
         title="Craft API",
         default_version='v1',
-        description="A comprehensive platform integrating social, e-commerce, courses, and chat functionalities. Features 150+ endpoints for seamless data flow across Customer, Crafter, and Delivery interfaces.",
+        description="API documentation for Craft application",
         terms_of_service="https://www.example.com/policies/terms/",
         contact=openapi.Contact(email="Waleeddarwesh2002@gmail.com"),
         license=openapi.License(name="BSD License"),
