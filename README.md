@@ -84,12 +84,14 @@ The project follows scalable backend architecture principles using Django and mo
 
 | Component | Technology |
 |---|---|
-| Backend Framework | Django 5.0 & Django REST Framework (DRF) |
-| Real-Time Communication | Django Channels (ASGI) & Daphne (HTTP/2 & WebSockets) |
-| Database | PostgreSQL |
-| Cache & Broker | Redis |
-| Async Tasks | Celery & Celery Beat |
-| Static File Serving | WhiteNoise (Compressed & Manifested) |
+| Backend Framework | Django 5.0 |
+| REST API Layer | Django REST Framework |
+| ASGI Server (HTTP/2 & WebSockets) | Daphne |
+| Primary Database | PostgreSQL |
+| Cache & Message Broker | Redis |
+| Background & Scheduled Tasks | Celery & Celery Beat |
+| Real-Time Communication | Django Channels |
+| Static File Serving (Compressed & Manifested) | WhiteNoise |
 | Containerization | Docker & Docker Compose |
 | Authentication | JWT (SimpleJWT) & Social Auth |
 | API Documentation | Swagger (drf-yasg) |
