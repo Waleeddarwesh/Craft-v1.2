@@ -140,8 +140,8 @@ The recommended way to run the project locally. The provided `docker-compose.yml
 ## 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/Waleeddarwesh/Craft-V1.0.git
-cd Craft-V1.0
+git clone https://github.com/Waleeddarwesh/Craft-V1.2.git
+cd Craft-V1.2
 ```
 
 ---
