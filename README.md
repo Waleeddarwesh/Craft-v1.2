@@ -29,11 +29,11 @@ The project follows scalable backend architecture principles using Django and mo
 - [Key Features](#-key-features)
 - [Technical Architecture](#-technical-architecture)
 - [User Interfaces](#-user-interfaces)
-- [Prerequisites](#-prerequisites)
+- [Prerequisites](#-Prerequisites)
 - [Installation Using Docker](#-installation-using-docker)
 - [Manual Installation](#-manual-installation)
 - [Environment Configuration](#-environment-configuration)
-- [Production Deployment (Railway)](#-production-deployment-(railway))
+- [Production Deployment (Railway)](#-production-deployment)
 - [API Documentation](#-api-documentation)
 - [Contributing](#-contributing)
 - [Contact](#-contact)
@@ -120,7 +120,6 @@ The backend serves three separate frontend applications:
 - Driver workflow management
 
 ---
-<a id="prerequisites"></a>
 # ⚙️ Prerequisites
 
 Before running the project, ensure you have:
@@ -287,7 +286,7 @@ EMAIL_HOST_PASSWORD=your_password
 
 ---
 
-# ☁️ Production Deployment (Railway)
+# ☁️ Production Deployment
 
 This application is fully optimized for continuous deployment on **Railway** using the included `railway.json` and `Procfile`.
 
