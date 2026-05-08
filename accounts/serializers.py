@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Customer, Supplier, Delivery,User,Address
+from .models import Customer, Supplier, Delivery, User, Address, PaymentCard
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError 
@@ -8,6 +8,7 @@ from products.serializers import ProductImageSerializer
 from rest_framework import serializers
 from django.core.signing import Signer, BadSignature
 from django.conf import settings
+from django.utils import timezone
 from rest_framework.exceptions import AuthenticationFailed
 import re
 
@@ -21,6 +22,44 @@ class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
         fields = ['id','BuildingNO','Street','City','State']
+
+class PaymentCardSerializer(serializers.ModelSerializer):
+    masked_number = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = PaymentCard
+        fields = ['id', 'card_number', 'card_type', 'expiry_month', 'expiry_year', 'cvv', 'is_default', 'masked_number', 'created_at']
+        extra_kwargs = {
+            'card_number': {'write_only': True},
+            'cvv': {'write_only': True},
+        }
+        read_only_fields = ['created_at']
+
+    def validate_expiry_month(self, value):
+        if not 1 <= value <= 12:
+            raise serializers.ValidationError("Month must be between 1 and 12.")
+        return value
+
+    def validate_expiry_year(self, value):
+        current_year = timezone.now().year
+        if value < current_year:
+            raise serializers.ValidationError("Card has expired.")
+        return value
+
+    def validate(self, attrs):
+        # Check if card is expired (month + year combo)
+        from django.utils import timezone
+        now = timezone.now()
+        year = attrs.get('expiry_year')
+        month = attrs.get('expiry_month')
+        if year and month:
+            if year < now.year or (year == now.year and month < now.month):
+                raise serializers.ValidationError({"error": "This card has expired."})
+        return attrs
+
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
 
 class AccountProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)

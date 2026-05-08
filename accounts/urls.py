@@ -2,15 +2,16 @@ from django.contrib import admin
 from .views import RegisterViewforCustomer,VerifyUserEmail,RegisterViewforSupplier,RegisterViewforDelivery,SupplierProfileAPIView
 from .views import LoginUserView,PasswordResetRequestView,SetNewPasswordView,LogoutApiView,social_complete_view
 from . views import CustomerProfileAPIView, DeliveryProfileAPIView,SuppliersList,SupplierDetail,FollowSupplier,TrendingSuppliersAPIView,AddressViewSet,SupplierDocumentViewSet
-from .views import deliveryDocumentViewSet,ResendOtp,CheckOTPValidity,SocialAccountCompleteView,social_login_page_view
+from .views import deliveryDocumentViewSet,ResendOtp,CheckOTPValidity,SocialAccountCompleteView,social_login_page_view,PaymentCardViewSet
 from django.urls import path , include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
 
 router = DefaultRouter()
 router.register('addresses', AddressViewSet, basename='address')
+router.register('payment-cards', PaymentCardViewSet, basename='payment-card')
 router.register('supplier-documents', SupplierDocumentViewSet, basename='supplier-documents')
-router.register('delivery-documents', deliveryDocumentViewSet, basename='supplier-documents')
+router.register('delivery-documents', deliveryDocumentViewSet, basename='delivery-documents')
 
 urlpatterns = [
     path('register_customer/', RegisterViewforCustomer.as_view(), name='register_customer'),

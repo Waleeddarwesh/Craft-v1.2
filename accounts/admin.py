@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Customer, Supplier, Delivery, Address, Follow, OneTimePassword
+from .models import User, Customer, Supplier, Delivery, Address, Follow, OneTimePassword, PaymentCard
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ('email', 'first_name', 'last_name', 'is_staff', 'is_active', 'is_verified')
@@ -8,9 +8,18 @@ class UserAdmin(admin.ModelAdmin):
     ordering = ('email',)
 
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ('user', 'CreditCardNO', 'CreditCardType')
+    list_display = ('user',)
     search_fields = ('user__email', 'user__first_name', 'user__last_name')
-    list_filter = ('CreditCardType',)
+
+class PaymentCardAdmin(admin.ModelAdmin):
+    list_display = ('user', 'card_type', 'masked_number_display', 'expiry_month', 'expiry_year', 'is_default')
+    search_fields = ('user__email', 'user__first_name', 'user__last_name', 'card_number')
+    list_filter = ('card_type', 'is_default')
+    readonly_fields = ('created_at',)
+
+    def masked_number_display(self, obj):
+        return obj.masked_number
+    masked_number_display.short_description = 'Card Number'
 
 class SupplierAdmin(admin.ModelAdmin):
     list_display = ('user', 'CategoryTitle', 'Rating', 'Orders', 'FollowersNo')
@@ -64,3 +73,4 @@ admin.site.register(Delivery, DeliveryAdmin)
 admin.site.register(Address, AddressAdmin)
 admin.site.register(Follow, FollowAdmin)
 admin.site.register(OneTimePassword, OneTimePasswordAdmin)
+admin.site.register(PaymentCard, PaymentCardAdmin)

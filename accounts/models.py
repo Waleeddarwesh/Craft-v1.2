@@ -3,7 +3,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
@@ -69,14 +69,62 @@ class User(AbstractBaseUser, PermissionsMixin):
         super().save(*args, **kwargs)
 
 
+CARD_TYPE_CHOICES = (
+    ('visa', 'Visa'),
+    ('mastercard', 'Mastercard'),
+    ('amex', 'American Express'),
+    ('discover', 'Discover'),
+    ('other', 'Other'),
+)
+
+
+class PaymentCard(models.Model):
+    """Reusable payment card model linked to any User (Customer or Supplier)."""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payment_cards')
+    card_number = models.CharField(
+        max_length=16,
+        validators=[RegexValidator(r'^\d{13,16}$', 'Enter a valid card number (13-16 digits).')],
+    )
+    card_type = models.CharField(max_length=20, choices=CARD_TYPE_CHOICES, default='visa')
+    expiry_month = models.PositiveIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(12)],
+    )
+    expiry_year = models.PositiveIntegerField(
+        validators=[MinValueValidator(2024), MaxValueValidator(2099)],
+    )
+    cvv = models.CharField(
+        max_length=4,
+        validators=[RegexValidator(r'^\d{3,4}$', 'Enter a valid CVV (3 or 4 digits).')],
+    )
+    is_default = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-is_default', '-created_at']
+        verbose_name = 'Payment Card'
+        verbose_name_plural = 'Payment Cards'
+
+    def __str__(self):
+        return f"{self.get_card_type_display()} ending in {self.card_number[-4:]}"
+
+    @property
+    def masked_number(self):
+        """Return the card number with all but the last 4 digits masked."""
+        return f"{'*' * (len(self.card_number) - 4)}{self.card_number[-4:]}"
+
+    def save(self, *args, **kwargs):
+        # If this card is set as default, unset any other default cards for this user
+        if self.is_default:
+            PaymentCard.objects.filter(user=self.user, is_default=True).exclude(pk=self.pk).update(is_default=False)
+        # If this is the user's first card, make it default
+        if not self.pk and not PaymentCard.objects.filter(user=self.user).exists():
+            self.is_default = True
+        super().save(*args, **kwargs)
+
+
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     CustomerPhoto = models.ImageField(upload_to='customer_photos/%y/%m/%d', blank=True, null=True)
-    CreditCardNO = models.CharField(max_length=20, blank=True, null=True)
-    CreditCardType = models.CharField(max_length=50, blank=True, null=True)
-    CreditCardMonth = models.CharField(max_length=2, blank=True, null=True)
-    CreditCardYear = models.CharField(max_length=4, blank=True, null=True)
-    CreditCVV = models.CharField(max_length=3)
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
@@ -87,11 +135,6 @@ class Supplier(models.Model):
     SupplierPhoto = models.ImageField(upload_to='supplier_photos/%y/%m/%d', blank=True, null=True)
     SupplierCover = models.ImageField(upload_to='supplier_covers/%y/%m/%d', blank=True, null=True)
     CategoryTitle = models.CharField(max_length=50)
-    CreditCardNO = models.CharField(max_length=16, blank=True, null=True)
-    CreditCardType = models.CharField(max_length=20, blank=True, null=True)
-    CreditCardMonth = models.IntegerField(blank=True, null=True)
-    CreditCardYear = models.IntegerField(blank=True, null=True)
-    CreditCVV = models.IntegerField(blank=True, null=True)
     Logo = models.ImageField(upload_to='supplier_logos/%y/%m/%d', blank=True, null=True)
     SupplierContract = models.FileField(upload_to='supplier_contracts/%y/%m/%d')
     SupplierIdentity = models.FileField(upload_to='supplier_identities/%y/%m/%d')

@@ -20,7 +20,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from . import permissions
-from .models import Address, Customer, Delivery, Follow, OneTimePassword, Supplier, User
+from .models import Address, Customer, Delivery, Follow, OneTimePassword, Supplier, User, PaymentCard
 from .permissions import IsCustomerorSupplier
 from .serializers import (
     AddressSerializer, CraftersSerializer, CustomerProfileSerializer,
@@ -29,7 +29,7 @@ from .serializers import (
     LogoutUserSerializer, SetNewPasswordSerializer, SocialAccountCompleteSerializer,
     SupplierDocumentSerializer, SupplierProfileSerializer,
     SupplierRegistrationSerializer, deliveryDocumentSerializer,
-    deliveryProfileSerializer
+    deliveryProfileSerializer, PaymentCardSerializer
 )
 from .services import complete_social_registration
 from .utils import send_generated_otp_to_email
@@ -616,6 +616,23 @@ class AddressViewSet(viewsets.ModelViewSet):
             return Address.objects.none()
         user = self.request.user
         return Address.objects.filter(user=user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class PaymentCardViewSet(viewsets.ModelViewSet):
+    """Full CRUD for managing the authenticated user's payment cards."""
+    serializer_class = PaymentCardSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False) or self.request.user.is_anonymous:
+            return PaymentCard.objects.none()
+        return PaymentCard.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
