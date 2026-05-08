@@ -48,8 +48,9 @@ COPY --from=builder /app/.venv ./.venv
 # Copy the application source code
 COPY . .
 
-# Change ownership of the app directory to the new non-root user
-RUN chown -R appuser:appuser /app
+# Change ownership of the app directory to the new non-root user and group 0 (OpenShift compatibility)
+RUN chown -R appuser:0 /app && \
+    chmod -R g=u /app
 
 # Switch to the non-root user
 USER appuser
