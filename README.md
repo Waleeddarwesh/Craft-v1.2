@@ -1,17 +1,16 @@
-# 🧶 Craft Application - Version 1.2
+# 🧶 Craft Application — V1.2 (Production Ready)
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue)
 ![Django](https://img.shields.io/badge/Django-5.0-green)
 ![DRF](https://img.shields.io/badge/DRF-Rest_Framework-red)
 ![Daphne](https://img.shields.io/badge/Server-Daphne_HTTP%2F2-blueviolet)
 ![Docker](https://img.shields.io/badge/Docker-Containerized-blue)
+![Railway](https://img.shields.io/badge/Deploy-Railway-0B0D0E)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
 ## 📌 Overview
 
-**Craft** is a comprehensive platform integrating social, e-commerce, courses, and chat functionalities. It features a high-density API architecture designed for seamless data flow across **Customer**, **Crafter**, and **Logistics** interfaces.
-
-Version 1.2 introduces **production-ready architecture**, **enhanced security hardening**, and **optimized deployment** for cloud platforms like Railway.
+**Craft** is a comprehensive multi-vendor marketplace and e-learning platform designed to connect handcraft suppliers with customers through a scalable and feature-rich ecosystem.
 
 The platform integrates multiple advanced systems into a single architecture, including:
 
@@ -19,10 +18,24 @@ The platform integrates multiple advanced systems into a single architecture, in
 - 🎓 E-Learning Features
 - 💬 Real-Time Communication
 - 🤝 Social Networking
-- 📦 Delivery & Logistics Management
+- 📦 Delivery Management
 - 🤖 Smart Recommendations
 
 The project follows scalable backend architecture principles using Django and modern DevOps-friendly technologies, and is fully optimized for production environments.
+
+---
+
+# 🆕 What's New in V1.2
+
+| Enhancement | Details |
+|---|---|
+| **Production Security** | HSTS, XSS protection, CSRF hardening, SSL redirect, and Content-Type sniffing filters |
+| **ASGI Server** | Migrated to Daphne with native HTTP/2 and WebSocket support |
+| **Database Optimization** | Persistent connection pooling (`CONN_MAX_AGE=600`) for high-concurrency traffic |
+| **Static Files** | WhiteNoise with compression and manifest caching for fast delivery |
+| **Cloud Deployment** | Pre-configured `Procfile` and `railway.json` for one-click Railway deployment |
+| **Environment Management** | Professional `django-environ` configuration with development/production toggle |
+| **Dependency Audit** | Cleaned and optimized `requirements.txt` — resolved all conflicts and removed deprecated packages |
 
 ---
 
@@ -105,13 +118,21 @@ The project follows scalable backend architecture principles using Django and mo
 The backend serves three separate frontend applications:
 
 ### 1️⃣ Customer Application
-- Browse products, purchase courses, social interactions, and track orders.
+- Browse products
+- Purchase courses
+- Social interactions
+- Track orders
 
 ### 2️⃣ Supplier Dashboard
-- Product/Course management, sales analytics, and order handling.
+- Product management
+- Course management
+- Sales analytics
+- Order handling
 
 ### 3️⃣ Delivery Application
-- Shipment tracking, driver workflow, and status updates.
+- Shipment tracking
+- Delivery status updates
+- Driver workflow management
 
 ---
 
@@ -144,6 +165,8 @@ cd Craft-v1.2
 
 Create a `.env` file in the root directory.
 
+Example configuration is available below in the Environment Configuration section.
+
 ---
 
 ## 3️⃣ Build and Run Containers
@@ -152,16 +175,32 @@ Create a `.env` file in the root directory.
 docker compose up --build -d
 ```
 
+This will automatically start:
+
+* Django ASGI Server (Daphne)
+* PostgreSQL Database
+* Redis Server
+* Celery Workers
+* Celery Beat Scheduler
+
 ---
 
 # 🔧 Manual Installation
 
 ## 1️⃣ Create Virtual Environment
 
+### Linux / macOS
+
 ```bash
 python -m venv venv
-venv\Scripts\activate  # Windows
-source venv/bin/activate # Linux/macOS
+source venv/bin/activate
+```
+
+### Windows
+
+```bash
+python -m venv venv
+venv\Scripts\activate
 ```
 
 ---
@@ -180,17 +219,37 @@ Create `.env` file in the root directory (see [Environment Configuration](#-envi
 
 ---
 
-## 4️⃣ Apply Database Migrations & Run
+## 4️⃣ Apply Database Migrations
 
 ```bash
 python manage.py migrate
-python manage.py createsuperuser
-daphne -b 0.0.0.0 -p 8000 Handcrafts.asgi:application
 ```
 
 ---
 
-## 5️⃣ Run Redis & Celery
+## 5️⃣ Create Superuser
+
+```bash
+python manage.py createsuperuser
+```
+
+---
+
+## 6️⃣ Run Development Server
+
+To support WebSockets properly, use Daphne:
+
+```bash
+daphne -b 0.0.0.0 -p 8000 Handcrafts.asgi:application
+```
+
+*(Alternatively, `python manage.py runserver` works for standard HTTP testing).*
+
+---
+
+## 7️⃣ Run Redis & Celery
+
+For chat and asynchronous tasks (ensure Redis server is running locally):
 
 **Run Celery Worker:**
 ```bash
@@ -230,6 +289,15 @@ CELERY_BROKER_URL=redis://localhost:6379/0
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_PUBLISHABLE_KEY=pk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
+
+# Google OAuth
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+# Email Service
+EMAIL_HOST=sandbox.smtp.mailtrap.io
+EMAIL_HOST_USER=your_user
+EMAIL_HOST_PASSWORD=your_password
 ```
 
 ---
@@ -243,6 +311,8 @@ This application is fully optimized for continuous deployment on **Railway** usi
 *   **Static Files:** Served efficiently via WhiteNoise.
 *   **Security Hardened:** Setting `ENVIRONMENT=production` enables strict HSTS, XSS protection, and Content-Type sniffing filters.
 
+**To deploy:** Connect your GitHub repository to Railway, configure your PostgreSQL and Redis plugins, and populate the environment variables.
+
 ---
 
 # 📖 API Documentation
@@ -250,30 +320,54 @@ This application is fully optimized for continuous deployment on **Railway** usi
 After running the server:
 
 ### Swagger UI
+
 http://localhost:8000/docs/
+
+### Redoc Documentation
+
+http://localhost:8000/redoc/
 
 ---
 
 # 🤝 Contributing
 
 1️⃣ Fork the repository
-2️⃣ Create feature branch (`git checkout -b feature/AmazingFeature`)
-3️⃣ Commit changes (`git commit -m "Add Amazing Feature"`)
-4️⃣ Push to GitHub (`git push origin feature/AmazingFeature`)
+
+2️⃣ Create feature branch
+
+```bash
+git checkout -b feature/AmazingFeature
+```
+
+3️⃣ Commit changes
+
+```bash
+git commit -m "Add Amazing Feature"
+```
+
+4️⃣ Push to GitHub
+
+```bash
+git push origin feature/AmazingFeature
+```
+
 5️⃣ Open Pull Request
 
 ---
 
 # 📞 Contact
 
-## Waleed Darwesh Saad
+## Waleed Darwesh
 
 Backend Software Engineer | Django Developer | Cloud DevOps Engineer
 
-📧 Email: [Waleeddarwesh2002@gmail.com](mailto:Waleeddarwesh2002@gmail.com)
+📧 Email:
+[Waleeddarwesh2002@gmail.com](mailto:Waleeddarwesh2002@gmail.com)
 
-🔗 LinkedIn: [linkedin.com/in/waleeddarwesh1](https://www.linkedin.com/in/waleeddarwesh1/)
+🔗 LinkedIn:
+https://www.linkedin.com/in/waleeddarwesh1/
 
-🔗 GitHub: [github.com/Waleeddarwesh](https://github.com/Waleeddarwesh)
+🔗 GitHub:
+https://github.com/Waleeddarwesh
 
 ---
