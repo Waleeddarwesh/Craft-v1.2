@@ -33,7 +33,7 @@ The project follows scalable backend architecture principles using Django and mo
 - [Installation Using Docker](#-installation-using-docker)
 - [Manual Installation](#-manual-installation)
 - [Environment Configuration](#-environment-configuration)
-- [Production Deployment (Railway)](#-production-deployment)
+- [Production Deployment](#-production-deployment)
 - [API Documentation](#-api-documentation)
 - [Contributing](#-contributing)
 - [Contact](#-contact)
