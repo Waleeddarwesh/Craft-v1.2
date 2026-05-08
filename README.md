@@ -1,4 +1,4 @@
-# 🧶 Craft Application — V1.2 (Production Ready)
+# 🧶 Craft Application — v1.2 (Production Ready)
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue)
 ![Django](https://img.shields.io/badge/Django-5.0-green)
