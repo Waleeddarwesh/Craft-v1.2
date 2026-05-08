@@ -26,17 +26,17 @@ The project follows scalable backend architecture principles using Django and mo
 
 # 📋 Table of Contents
 
-- [Key Features](#-key-features)
-- [Technical Architecture](#-technical-architecture)
-- [User Interfaces](#-user-interfaces)
-- [Prerequisites](#-prerequisites)
-- [Installation Using Docker](#-installation-using-docker)
-- [Manual Installation](#-manual-installation)
-- [Environment Configuration](#-environment-configuration)
-- [Production Deployment (Railway)](#-production-deployment-railway)
-- [API Documentation](#-api-documentation)
-- [Contributing](#-contributing)
-- [Contact](#-contact)
+- [Key Features](#key-features)
+- [Technical Architecture](#technical-architecture)
+- [User Interfaces](#user-interfaces)
+- [Prerequisites](#prerequisites)
+- [Installation Using Docker](#installation-using-docker)
+- [Manual Installation](#manual-installation)
+- [Environment Configuration](#environment-configuration)
+- [Production Deployment (Railway)](#production-deployment-railway)
+- [API Documentation](#api-documentation)
+- [Contributing](#contributing)
+- [Contact](#contact)
 
 ---
 
