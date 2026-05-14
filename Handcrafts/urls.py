@@ -24,6 +24,8 @@ schema_view = get_schema_view(
 
 from django.conf.urls.i18n import i18n_patterns
 
+from admin_api.views import dashboard_view
+
 urlpatterns = [
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('admin/', admin.site.urls),
@@ -39,6 +41,12 @@ urlpatterns = [
     path('return/', include('returnrequest.urls')),
     path('reports/', include('reports.urls')),
     path('recommendations/', include('recommendations.urls')),
+
+    # Admin API & Dashboard
+    path('admin-api/', include('admin_api.urls')),
+    path('dashboard/', dashboard_view, {'path': 'index.html'}, name='dashboard-login'),
+    path('dashboard/<path:path>', dashboard_view, name='dashboard-file'),
+
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
 ]

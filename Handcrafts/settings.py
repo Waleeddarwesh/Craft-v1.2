@@ -93,6 +93,7 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     'accounts',
+    'admin_api',
     'chatapp',
     'course',
     'notifications',
