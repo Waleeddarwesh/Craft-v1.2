@@ -19,6 +19,7 @@ The platform integrates multiple advanced systems into a single architecture, in
 - 💬 Real-Time Communication
 - 🤝 Social Networking
 - 📦 Delivery Management
+- 📊 Centralized Admin Dashboard
 - 🤖 Smart Recommendations
 
 The project follows scalable backend architecture principles using Django and modern DevOps-friendly technologies, and is fully optimized for production environments.
@@ -29,6 +30,7 @@ The project follows scalable backend architecture principles using Django and mo
 
 | Enhancement | Details |
 |---|---|
+| **System Dashboard** | Centralized admin panel for platform-wide monitoring, analytics, and ecosystem management |
 | **Production Security** | HSTS, XSS protection, CSRF hardening, SSL redirect, and Content-Type sniffing filters |
 | **ASGI Server** | Migrated to Daphne with native HTTP/2 and WebSocket support |
 | **Database Optimization** | Persistent connection pooling (`CONN_MAX_AGE=600`) for high-concurrency traffic |
@@ -86,6 +88,15 @@ The project follows scalable backend architecture principles using Django and mo
 
 ---
 
+## 📊 Admin Dashboard & System Management
+
+- Global oversight of all platform operations
+- Comprehensive analytics and reporting
+- Cross-platform user and role management
+- Financial transaction monitoring
+
+---
+
 ## 🤖 Smart Services & Background Tasks
 
 - Recommendation engine for products and courses
@@ -115,7 +126,7 @@ The project follows scalable backend architecture principles using Django and mo
 
 # 👥 User Interfaces
 
-The backend serves three separate frontend applications:
+The backend serves four separate frontend applications:
 
 ### 1️⃣ Customer Application
 - Browse products
@@ -133,6 +144,12 @@ The backend serves three separate frontend applications:
 - Shipment tracking
 - Delivery status updates
 - Driver workflow management
+
+### 4️⃣ System Admin Dashboard
+- Platform-wide analytics
+- Global user and supplier management
+- Transaction and financial monitoring
+- System health and activity tracking
 
 ---
 
@@ -155,7 +172,7 @@ The recommended way to run the project locally. The provided `docker-compose.yml
 ## 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/Waleeddarwesh/Craft-v1.2.git
+git clone [https://github.com/Waleeddarwesh/Craft-v1.2.git](https://github.com/Waleeddarwesh/Craft-v1.2.git)
 cd Craft-v1.2
 ```
 
@@ -359,15 +376,12 @@ git push origin feature/AmazingFeature
 
 ## Waleed Darwesh
 
-Backend Software Engineer | Django Developer | Cloud DevOps Engineer
+Django Developer | Cloud DevOps Engineer
 
 📧 Email:
 [Waleeddarwesh2002@gmail.com](mailto:Waleeddarwesh2002@gmail.com)
 
 🔗 LinkedIn:
 https://www.linkedin.com/in/waleeddarwesh1/
-
-🔗 GitHub:
-https://github.com/Waleeddarwesh
 
 ---
