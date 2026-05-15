@@ -2,9 +2,10 @@
    Craft Admin Dashboard — Main App Initialization
    ============================================================================= */
 (function() {
-    // Guard: redirect to login if not authenticated
-    if (!Auth.isLoggedIn()) {
-        window.location.href = 'index.html';
+    // Guard: redirect to login if not authenticated or not staff
+    const user = Auth.getUser();
+    if (!Auth.isLoggedIn() || (user && user.is_staff === false)) {
+        Auth.logout();
         return;
     }
 

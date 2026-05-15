@@ -62,8 +62,13 @@ const Router = (() => {
 
     function init() {
         window.addEventListener('hashchange', handleRoute);
-        if (!window.location.hash) window.location.hash = '#overview';
-        else handleRoute();
+        if (!window.location.hash || window.location.hash === '#') {
+            window.location.hash = '#overview';
+            // hashchange fires automatically since we changed the hash
+        } else {
+            // Hash already set (e.g. page refresh on #orders) — hashchange won't fire
+            handleRoute();
+        }
     }
 
     return { register, navigate, getCurrentRoute, init, handleRoute };

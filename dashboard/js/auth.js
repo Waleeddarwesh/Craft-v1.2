@@ -4,8 +4,7 @@
 const Auth = (() => {
     const STORAGE_KEY = 'craft_tokens';
     const USER_KEY = 'craft_user';
-    // Try to auto-detect the API base URL
-    const API_BASE = localStorage.getItem('craft_api_base') || 'http://127.0.0.1:8000';
+    // Default API base URL (read fresh from localStorage each time via getApiBase)
 
     function getTokens() {
         try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || null; }
@@ -36,7 +35,7 @@ const Auth = (() => {
 
     async function login(email, password) {
         try {
-            const res = await fetch(`${API_BASE}/accounts/login/`, {
+            const res = await fetch(`${getApiBase()}/accounts/login/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
@@ -45,11 +44,15 @@ const Auth = (() => {
             // Handle both token formats: {tokens:{access,refresh}} or {access,refresh}
             const tokens = data.tokens || (data.access ? { access: data.access, refresh: data.refresh } : null);
             if (res.ok && tokens) {
+                // Reject non-admin users before storing tokens
+                if (data.is_staff === false) {
+                    return { success: false, error: 'Access denied. This dashboard is for administrators only.' };
+                }
                 setTokens(tokens);
                 setUser({
                     email: data.email || email,
                     full_name: data.full_name || data.first_name || email.split('@')[0],
-                    is_staff: data.is_staff !== undefined ? data.is_staff : true
+                    is_staff: data.is_staff === true  // must be explicitly true from server
                 });
                 return { success: true };
             }
@@ -67,7 +70,7 @@ const Auth = (() => {
         const tokens = getTokens();
         if (!tokens || !tokens.refresh) return false;
         try {
-            const res = await fetch(`${API_BASE}/accounts/token-refresh/`, {
+            const res = await fetch(`${getApiBase()}/accounts/token-refresh/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ refresh: tokens.refresh })
@@ -92,7 +95,7 @@ const Auth = (() => {
     }
 
     function getApiBase() {
-        return API_BASE;
+        return localStorage.getItem('craft_api_base') || 'http://127.0.0.1:8000';
     }
 
     return { getTokens, setTokens, getUser, setUser, getAccessToken, isLoggedIn, login, refreshToken, logout, setApiBase, getApiBase };

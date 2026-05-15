@@ -77,12 +77,13 @@ class AdminStatsView(APIView):
         month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
         # Revenue from succeeded payments
-        total_revenue = PaymentHistory.objects.filter(
-            payment_status='succeeded'
-        ).aggregate(total=Sum('order__final_amount'))['total'] or Decimal('0')
-
-        # Also sum from transactions as backup
-        if total_revenue == 0:
+        succeeded_count = PaymentHistory.objects.filter(payment_status='succeeded').count()
+        if succeeded_count > 0:
+            total_revenue = PaymentHistory.objects.filter(
+                payment_status='succeeded'
+            ).aggregate(total=Sum('order__final_amount'))['total'] or Decimal('0')
+        else:
+            # Fallback: sum from product/course purchase transactions
             total_revenue = Transaction.objects.filter(
                 transaction_type__in=[
                     Transaction.TransactionType.PURCHASED_PRODUCTS,
@@ -152,6 +153,85 @@ class AdminChartsView(APIView):
             'status_labels': status_labels or ['No Data'],
             'status_data': status_data or [0],
         })
+
+
+class AdminSystemReportsView(APIView):
+    """System-wide financial reports for the admin dashboard."""
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        period = request.query_params.get('period', 'this_month')
+        from reports.services import get_date_range_for_period
+        
+        try:
+            current_start, current_end, prev_start, prev_end = get_date_range_for_period(period_string=period)
+        except Exception:
+            return Response({"error": "Invalid period"}, status=status.HTTP_400_BAD_REQUEST)
+
+        income_types = [
+            Transaction.TransactionType.PURCHASED_PRODUCTS,
+            Transaction.TransactionType.PURCHASED_COURSE
+        ]
+        outcome_types = [
+            Transaction.TransactionType.WITHDRAWAL_REQUEST,
+            Transaction.TransactionType.RETURN_DEBIT,
+            Transaction.TransactionType.REFUND_FAILED
+        ]
+
+        transactions = Transaction.objects.filter(
+            created_at__date__gte=current_start,
+            created_at__date__lte=current_end
+        )
+
+        graph_data = transactions.annotate(
+            month=TruncMonth('created_at')
+        ).values('month').annotate(
+            income=Sum('amount', filter=Q(transaction_type__in=income_types)),
+            outcome=Sum('amount', filter=Q(transaction_type__in=outcome_types))
+        ).order_by('month')
+
+        formatted_graph_data = [
+            {
+                "month": item['month'].strftime("%b") if item['month'] else "Unknown",
+                "income": float(item['income'] or 0),
+                "outcome": float(abs(item['outcome'] or 0))
+            }
+            for item in graph_data
+        ]
+
+        current_totals = transactions.aggregate(
+            total_income=Sum('amount', filter=Q(transaction_type__in=income_types)),
+            total_outcome=Sum('amount', filter=Q(transaction_type__in=outcome_types))
+        )
+        current_total_income = current_totals.get('total_income') or Decimal('0.0')
+        current_total_outcome = current_totals.get('total_outcome') or Decimal('0.0')
+        current_earning = current_total_income + current_total_outcome
+
+        prev_totals = Transaction.objects.filter(
+            created_at__date__gte=prev_start,
+            created_at__date__lte=prev_end
+        ).aggregate(
+            total_income=Sum('amount', filter=Q(transaction_type__in=income_types)),
+            total_outcome=Sum('amount', filter=Q(transaction_type__in=outcome_types))
+        )
+        prev_total_income = prev_totals.get('total_income') or Decimal('0.0')
+        prev_total_outcome = prev_totals.get('total_outcome') or Decimal('0.0')
+        previous_earning = prev_total_income + prev_total_outcome
+
+        percentage_change = 0.0
+        if previous_earning > 0:
+            percentage_change = float(((current_earning - previous_earning) / previous_earning) * 100)
+        elif current_earning > 0:
+            percentage_change = 100.0
+
+        return Response({
+            "total_income": float(current_total_income),
+            "total_outcome": float(abs(current_total_outcome)),
+            "total_earning": float(current_earning),
+            "percentage_change": round(percentage_change, 2),
+            "graph_data": formatted_graph_data
+        })
+
 
 
 # =============================================================================
@@ -355,10 +435,14 @@ class AdminUsersView(APIView):
     permission_classes = [IsAdminUser]
 
     def get(self, request):
-        customers = User.objects.filter(is_customer=True).values(
+        customers_qs = User.objects.filter(is_customer=True).values(
             'id', 'email', 'first_name', 'last_name', 'PhoneNO',
             'is_verified', 'Balance', 'date_joined', 'is_active'
         )
+        customers = [
+            {**c, 'date_joined': c['date_joined'].isoformat() if c['date_joined'] else None}
+            for c in customers_qs
+        ]
         suppliers_qs = Supplier.objects.select_related('user').all()
         suppliers = [{
             'id': s.id,

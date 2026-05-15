@@ -5,6 +5,7 @@ urlpatterns = [
     # --- KPI & Chart Data ---
     path('stats/', views.AdminStatsView.as_view(), name='admin-stats'),
     path('charts/', views.AdminChartsView.as_view(), name='admin-charts'),
+    path('reports/', views.AdminSystemReportsView.as_view(), name='admin-reports'),
 
     # --- Entity List Endpoints (admin sees ALL records) ---
     path('orders/', views.AdminOrdersView.as_view(), name='admin-orders'),
